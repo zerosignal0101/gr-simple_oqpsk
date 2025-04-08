@@ -9,6 +9,7 @@
 #define INCLUDED_SIMPLE_OQPSK_OQPSKMOD_IMPL_H
 
 #include <gnuradio/simple_oqpsk/oqpskMod.h>
+#include <gnuradio/filter/firdes.h>
 
 namespace gr {
 namespace simple_oqpsk {
@@ -16,7 +17,24 @@ namespace simple_oqpsk {
 class oqpskMod_impl : public oqpskMod
 {
 private:
-    // Nothing to declare in this block.
+    bool d_debug;
+    int d_samples_per_symbol;
+    float d_rolloff;
+    
+    // Pulse shaping filter
+    std::vector<float> d_rrc_taps;
+    
+    // State variables
+    int d_symbol_count;
+    unsigned char d_current_byte;
+    int d_bit_count;
+    float d_i_phase, d_q_phase;
+    
+    // Generate RRC filter taps
+    void generate_rrc_taps();
+    
+    // Map bits to symbol
+    void map_bits_to_symbol(unsigned char bits, float* i, float* q);
 
 public:
     oqpskMod_impl(bool debug, int samples_per_symbol, float rolloff);
