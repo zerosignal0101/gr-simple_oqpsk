@@ -19,7 +19,9 @@ private:
     // Nothing to declare in this block.
 
 public:
-    pduToConStream_impl();
+    pduToConStream_impl(bool debug,
+        const std::string& tag_name,
+        float sample_rate);
     ~pduToConStream_impl();
 
     // Where all the action really happens

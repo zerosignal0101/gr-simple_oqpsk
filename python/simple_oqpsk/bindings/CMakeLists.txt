@@ -23,7 +23,6 @@ include(GrPybind)
 ########################################################################
 # Python Bindings
 ########################################################################
-
 list(APPEND simple_oqpsk_python_files
     pduToConStream_python.cc python_bindings.cc)
 

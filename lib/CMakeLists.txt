@@ -10,9 +10,8 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
-
 list(APPEND simple_oqpsk_sources
-    pduToConStream_impl.cc)
+    pduToConStream_impl.cc )
 
 set(simple_oqpsk_sources
     "${simple_oqpsk_sources}"

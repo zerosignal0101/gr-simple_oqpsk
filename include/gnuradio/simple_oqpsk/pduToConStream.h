@@ -32,7 +32,7 @@ public:
      * class. simple_oqpsk::pduToConStream::make is the public interface for
      * creating new instances.
      */
-    static sptr make();
+    static sptr make(bool debug, const std::string& tag_name, float sample_rate);
 };
 
 } // namespace simple_oqpsk

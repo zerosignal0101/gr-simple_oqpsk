@@ -15,16 +15,19 @@ namespace simple_oqpsk {
 using input_type = float;
 #pragma message("set the following appropriately and remove this warning")
 using output_type = float;
-pduToConStream::sptr pduToConStream::make()
+pduToConStream::sptr
+pduToConStream::make(bool debug, const std::string& tag_name, float sample_rate)
 {
-    return gnuradio::make_block_sptr<pduToConStream_impl>();
+    return gnuradio::make_block_sptr<pduToConStream_impl>(debug, tag_name, sample_rate);
 }
 
 
 /*
  * The private constructor
  */
-pduToConStream_impl::pduToConStream_impl()
+pduToConStream_impl::pduToConStream_impl(bool debug,
+                                         const std::string& tag_name,
+                                         float sample_rate)
     : gr::block("pduToConStream",
                 gr::io_signature::make(
                     1 /* min inputs */, 1 /* max inputs */, sizeof(input_type)),
