@@ -24,7 +24,8 @@ include(GrPybind)
 # Python Bindings
 ########################################################################
 list(APPEND simple_oqpsk_python_files
-    pduToConStream_python.cc python_bindings.cc)
+    pduToConStream_python.cc
+    oqpskMod_python.cc python_bindings.cc)
 
 gr_pybind_make_oot(simple_oqpsk ../../.. gr::simple_oqpsk "${simple_oqpsk_python_files}")
 

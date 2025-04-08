@@ -10,4 +10,5 @@
 # Install public header files
 ########################################################################
 install(FILES api.h
-    pduToConStream.h DESTINATION include/gnuradio/simple_oqpsk)
+    pduToConStream.h
+    oqpskMod.h DESTINATION include/gnuradio/simple_oqpsk)

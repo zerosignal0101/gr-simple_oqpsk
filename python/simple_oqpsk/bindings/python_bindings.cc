@@ -22,6 +22,7 @@ namespace py = pybind11;
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
     void bind_pduToConStream(py::module& m);
+    void bind_oqpskMod(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -51,5 +52,6 @@ PYBIND11_MODULE(simple_oqpsk_python, m)
     /**************************************/
     // BINDING_FUNCTION_CALLS(
     bind_pduToConStream(m);
+    bind_oqpskMod(m);
     // ) END BINDING_FUNCTION_CALLS
 }
