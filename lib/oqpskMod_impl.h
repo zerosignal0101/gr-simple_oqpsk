@@ -9,7 +9,9 @@
 #define INCLUDED_SIMPLE_OQPSK_OQPSKMOD_IMPL_H
 
 #include <gnuradio/simple_oqpsk/oqpskMod.h>
-#include <gnuradio/filter/firdes.h>
+#include <vector>
+#include <cmath>
+#include <stdexcept>
 
 namespace gr {
 namespace simple_oqpsk {

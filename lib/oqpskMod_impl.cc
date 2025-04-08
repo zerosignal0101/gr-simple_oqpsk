@@ -52,11 +52,62 @@ oqpskMod_impl::oqpskMod_impl(bool debug, int samples_per_symbol, float rolloff)
  */
 oqpskMod_impl::~oqpskMod_impl() {}
 
+std::vector<float> root_raised_cosine(
+    double gain,
+    double sampling_freq,
+    double symbol_rate,
+    double alpha,
+    int ntaps)
+{
+    if (ntaps % 2 == 0) {
+        throw std::runtime_error("Number of taps must be odd");
+    }
+
+    double sps = sampling_freq / symbol_rate; // samples per symbol
+    std::vector<float> taps(ntaps);
+    double scale = 0.0;
+    double t, val;
+    
+    for (int i = 0; i < ntaps; i++) {
+        t = i - (ntaps - 1) / 2.0;
+        t /= sps;
+        
+        if (t == 0.0) {
+            val = 1.0 - alpha + (4 * alpha / M_PI);
+        } else if (std::abs(t) == 1.0 / (4.0 * alpha)) {
+            val = (alpha / std::sqrt(2.0)) * 
+                  ((1.0 + 2.0 / M_PI) * std::sin(M_PI / (4.0 * alpha))) +
+                  ((1.0 - 2.0 / M_PI) * std::cos(M_PI / (4.0 * alpha)));
+        } else {
+            double pi_t = M_PI * t;
+            double atpi_t = 4.0 * alpha * t;
+            double atpi_t2 = atpi_t * atpi_t;
+            
+            val = (std::sin(pi_t * (1.0 - alpha)) + 
+                  4.0 * alpha * t * std::cos(pi_t * (1.0 + alpha))) /
+                  (pi_t * (1.0 - atpi_t2));
+        }
+        
+        taps[i] = static_cast<float>(gain * val);
+        scale += taps[i];
+    }
+    
+    // Normalize to maintain unity gain
+    for (auto& tap : taps) {
+        tap /= scale;
+    }
+    
+    return taps;
+}
+
 void oqpskMod_impl::generate_rrc_taps()
 {
     // Generate root-raised cosine filter taps
-    int ntaps = 11 * d_samples_per_symbol;
-    d_rrc_taps = gr::filter::firdes::root_raised_cosine(
+    int ntaps = 8 * d_samples_per_symbol + 1; 
+    if (d_debug == true) {
+        std::cout << "Generate RRC Ntap: " << ntaps << std::endl;
+    }
+    d_rrc_taps = root_raised_cosine(
     1.0,                     // gain
     d_samples_per_symbol,     // sampling rate
     1.0,                     // symbol rate
