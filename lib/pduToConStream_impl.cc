@@ -172,7 +172,7 @@ int pduToConStream_impl::general_work(int noutput_items,
         } else {
             // No PDU data available - insert padding
             int padding_size = remaining_request;
-            memset(out + produced, 1, padding_size);
+            memset(out + produced, 0xAA, padding_size);
             produced += padding_size;
             if (d_debug == true) {
                 std::cout << "Inserted " << padding_size << ")" << std::endl;
