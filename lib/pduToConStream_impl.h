@@ -16,7 +16,22 @@ namespace simple_oqpsk {
 class pduToConStream_impl : public pduToConStream
 {
 private:
-    // Nothing to declare in this block.
+    bool d_debug;
+    std::string d_tag_name;
+    float d_sample_rate;
+
+    std::deque<std::vector<uint8_t>> d_pdu_queue;
+    std::vector<uint8_t> d_current_pdu;
+    size_t d_pdu_offset;
+    
+    std::chrono::time_point<std::chrono::steady_clock> d_last_time;
+    double d_items_per_second;
+    double d_items_per_us;
+    uint64_t d_next_tag_offset;
+    
+    gr::thread::mutex d_mutex;
+
+    void handle_pdu(pmt::pmt_t msg);
 
 public:
     pduToConStream_impl(bool debug,

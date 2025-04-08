@@ -17,14 +17,37 @@ parameters:
     label: Debug print
     dtype: bool
     default: true
+    description: |
+        Debug flag, if this flag is set to 'True', the debug info will be output to console.
 -   id: tag_name
     label: Packet length tag name
     dtype: string
     default: '"packet_len"'
+    description: |
+        The name of the tag that will be added to the output stream
+        to mark the start of each packet. The tag value will contain
+        the length of the packet in bits.
+        
+        Default: "packet_len"
+        
+        Example: When set to "pdu_len", tags with this name will be
+        added at the start of each PDU in the output stream.
 -   id: sample_rate
     label: Output sample rate (samples/sec)
     dtype: float
-    default: 1e6
+    default: samp_rate
+    description: |
+        The constant output sample rate in samples per second.
+        
+        The block will maintain this rate by:
+        1. Calculating the exact number of samples that should be
+           produced based on elapsed time
+        2. Adjusting output to match this rate exactly
+        
+        Default: samp_rate
+        
+        Note: This is the rate at which bits will be output,
+        regardless of the input PDU arrival rate.
 #- id: ...
 #  label: ...
 #  dtype: ...
@@ -40,10 +63,74 @@ inputs:
 -   domain: message
     id: pdu
     optional: true
+    description: |
+        Input message port for receiving PDUs.
+        
+        Expected format:
+        - PMT pair (metadata, data)
+        - Data must be a u8vector (uint8_t array)
+        
+        Note: PDUs are queued internally and output at the
+        constant sample rate.
 
 outputs:
 -   domain: stream
     dtype: byte
+    description: |
+        Output stream of bits at constant sample rate.
+        
+        Features:
+        - Each PDU is output as a contiguous block of bits
+        - Tagged with packet length at start of each PDU
+        - Padding bits inserted between PDUs as needed
+        - Maintains exact sample rate timing
+
+# Detailed documentation
+documentation: |
+    PDU to Stream Converter Block
+    
+    Purpose:
+    Converts incoming PDUs (Protocol Data Units) to a constant-rate
+    bit stream with packet length tagging and automatic padding.
+    
+    Key Features:
+    1. Constant Rate Output:
+       - Maintains precise output sample rate using system clock
+       - Compensates for processing delays to ensure exact timing
+    
+    2. Packet Handling:
+       - Queues incoming PDUs for sequential processing
+       - Preserves packet boundaries in output stream
+    
+    3. Tagging:
+       - Adds configurable packet length tags
+       - Tags appear at the exact start of each packet
+    
+    4. Padding:
+       - Automatic insertion of idle bits between packets
+       - Ensures constant output rate during gaps
+    
+    Typical Use Cases:
+    - Interface between message-based and stream-based processing
+    - Maintaining timing in packet-based communications
+    - Testing systems requiring precise bit timing
+    - Converting bursty packet data to continuous streams
+    
+    Debugging:
+    The block provides detailed console output showing:
+    - PDU reception and queue status
+    - Tag placement information
+    - Padding insertion events
+    - Production statistics
+    
+    Performance Notes:
+    - Uses mutex protection for thread-safe operation
+    - Minimal copying of PDU data
+    - Efficient timing calculations
+    
+    Limitations:
+    - Only supports uint8_t PDUs (byte-aligned data)
+    - Padding is always 1-bit pattern (no complex idle sequences)
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.
