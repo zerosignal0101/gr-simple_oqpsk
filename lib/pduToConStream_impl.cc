@@ -11,7 +11,6 @@
 namespace gr {
 namespace simple_oqpsk {
 
-#pragma message("set the following appropriately and remove this warning")
 using output_type = uint8_t;
 pduToConStream::sptr
 pduToConStream::make(bool debug, const std::string& tag_name, float sample_rate)
