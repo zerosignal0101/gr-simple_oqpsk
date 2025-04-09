@@ -40,3 +40,88 @@ outputs:
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.
 file_format: 1
+documentation: |
+    # GNU Radio Block Documentation: Payload Extractor
+
+    The Payload Extractor block is designed to extract payload data from a stream of bits by:
+    1. Verifying packet length fields
+    2. Extracting and outputting the payload data as a PDU (Protocol Data Unit)
+
+    - Input: Stream of uint8 bits (0/1 values)
+    - Output: Message port "pdu" emitting extracted payloads as u8vectors
+
+    Parameters
+
+    | Parameter | Type | Description | Default |
+    |-----------|------|-------------|---------|
+    | Debug | Boolean | Enable debug print statements | True |
+
+    ## Behavior
+
+    ### State Machine Operation
+
+    The block operates using a state machine with four states:
+
+    1. **SEARCHING**: Looking for packet start (header tag)
+    2. **LENGTH**: Extracting and validating the 32-bit length field (16 bits + duplicate)
+    3. **PAYLOAD**: Collecting the payload bits
+
+    ### Packet Structure
+
+    The block expects packets with the following format:
+    ```
+    [Header Tag] 
+    [16-bit Payload Length] 
+    [16-bit Payload Length (duplicate)] 
+    [Payload Data]
+    ```
+
+    ## Input/Output Details
+
+    ### Input
+
+    - **Input 0**: Stream of uint8 values (must be 0 or 1)
+    - **Tags**: Requires "header_tag" to mark packet starts
+
+    ### Output
+
+    - **Message Port "pdu"**: Emits PMT u8vectors containing extracted payload bytes
+
+    ## Example Flowgraph
+
+    ```
+    [Bit Source] --> [Payload Extractor] --> [Message Debug]
+    ```
+
+    ## Usage Notes
+
+    1. **Input Requirements**:
+      - Input must be a stream of bits (0/1 values) as uint8
+      - Packets must be preceded by a "header_tag" tag
+
+    2. **Performance Considerations**:
+      - For high data rates, use the C++ version (better performance)
+      - Debug output can impact performance (disable for production)
+
+    3. **Common Issues**:
+      - Ensure proper bit ordering in input stream
+      - Verify access code matches between transmitter and receiver
+      - Check tag propagation in your flowgraph
+
+    ## Debugging
+
+    When debug mode is enabled, the block will print:
+    - State transitions
+    - Access code verification results
+    - Length field values
+    - Payload extraction status
+
+    Example debug output:
+    ```
+    [DEBUG] Found header_tag at pos 123, moving to ACCESS_CODE
+    [DEBUG] Received Access Code Bytes: 0xac 0xdd 0xa4 0xe2 0xf2 0x8c 0x20 0xfc 
+    [DEBUG] ACCESS_CODE matched, moving to LENGTH
+    [DEBUG] Length1: 42, Length2: 42
+    [DEBUG] LENGTH matched: 42 bytes, moving to PAYLOAD
+    [DEBUG] PAYLOAD complete, sent 42 bytes, returning to SEARCHING
+    ```
