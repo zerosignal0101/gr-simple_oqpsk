@@ -7,4 +7,5 @@
 #
 install(FILES
     simple_oqpsk_pduToConStream.block.yml
-    simple_oqpsk_payloadExtractor.block.yml DESTINATION share/gnuradio/grc/blocks)
+    simple_oqpsk_payloadExtractor.block.yml
+    simple_oqpsk_CRCErrorCounter.block.yml DESTINATION share/gnuradio/grc/blocks)

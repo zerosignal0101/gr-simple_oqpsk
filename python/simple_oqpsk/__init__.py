@@ -21,4 +21,5 @@ except ModuleNotFoundError:
 
 # import any pure python here
 from .payloadExtractor import payloadExtractor
+from .CRCErrorCounter import CRCErrorCounter
 #

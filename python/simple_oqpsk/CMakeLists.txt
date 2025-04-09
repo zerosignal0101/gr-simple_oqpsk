@@ -20,7 +20,8 @@ add_subdirectory(bindings)
 # Install python sources
 ########################################################################
 gr_python_install(FILES __init__.py
-    payloadExtractor.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/simple_oqpsk)
+    payloadExtractor.py
+    CRCErrorCounter.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/simple_oqpsk)
 
 ########################################################################
 # Handle the unit tests
