@@ -43,3 +43,10 @@ outputs:
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.
 file_format: 1
+documentation: |
+    # GNU Radio Block Documentation: CRCErrorCounter
+
+    The CRCErrorCounter block is designed to count the Error rate of CRC check.
+
+    - Input: ok pdu input and fail pdu input
+    - Output: Debug information in console outpu
