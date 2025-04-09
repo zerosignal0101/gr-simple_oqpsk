@@ -6,4 +6,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 install(FILES
-    simple_oqpsk_pduToConStream.block.yml DESTINATION share/gnuradio/grc/blocks)
+    simple_oqpsk_pduToConStream.block.yml
+    simple_oqpsk_payloadExtractor.block.yml DESTINATION share/gnuradio/grc/blocks)
