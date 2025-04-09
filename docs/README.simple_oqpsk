@@ -1,3 +1,7 @@
+# Simple utils
+
+**This is not OQPSK system implementation, just some utils for testing**
+
 This is the simple_oqpsk-write-a-block package meant as a guide to building
 out-of-tree packages. To use the simple_oqpsk blocks, the Python namespaces
 is in 'simple_oqpsk', which is imported as:
