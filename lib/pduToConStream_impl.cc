@@ -37,7 +37,9 @@ pduToConStream_impl::pduToConStream_impl(bool debug,
                 d_last_time(std::chrono::steady_clock::now()),
                 d_items_per_second(sample_rate),
                 d_items_per_us(sample_rate / 1e6),
-                d_next_tag_offset(0)
+                d_next_tag_offset(0),
+                d_gen(d_rd()),
+                d_dis(0, 255)
 {
     message_port_register_in(pmt::mp("pdu"));
     set_msg_handler(pmt::mp("pdu"), [this](pmt::pmt_t msg) {
@@ -170,12 +172,14 @@ int pduToConStream_impl::general_work(int noutput_items,
                 }
             }
         } else {
-            // No PDU data available - insert padding
+            // No PDU data available - insert random padding
             int padding_size = remaining_request;
-            memset(out + produced, 0xAA, padding_size);
+            for (int i = 0; i < padding_size; i++) {
+                out[produced + i] = static_cast<uint8_t>(d_dis(d_gen));
+            }
             produced += padding_size;
             if (d_debug == true) {
-                std::cout << "Inserted " << padding_size << ")" << std::endl;
+                std::cout << "Inserted " << padding_size << " bytes of random padding" << std::endl;
             }
         }
     }

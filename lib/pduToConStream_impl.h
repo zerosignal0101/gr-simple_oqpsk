@@ -9,6 +9,7 @@
 #define INCLUDED_SIMPLE_OQPSK_PDUTOCONSTREAM_IMPL_H
 
 #include <gnuradio/simple_oqpsk/pduToConStream.h>
+#include <random>
 
 namespace gr {
 namespace simple_oqpsk {
@@ -30,6 +31,10 @@ private:
     uint64_t d_next_tag_offset;
     
     gr::thread::mutex d_mutex;
+
+    std::random_device d_rd;
+    std::mt19937 d_gen;
+    std::uniform_int_distribution<> d_dis;
 
     void handle_pdu(pmt::pmt_t msg);
 
